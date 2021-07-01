@@ -12,7 +12,7 @@ function addRow(){
     var tbody = tBodies[0];
     var tr = tbody.insertRow(tbody.rows.length);
     var td_1 = tr.insertCell(0);
-    td_1.innerHTML = num;
+    td_1.innerHTML = "<div contenteditable='true'>"+num+"</div>";
 	num++;
     var td_2 = tr.insertCell(1);
     td_2.innerHTML = "<div contenteditable='true'></div>";
@@ -26,15 +26,28 @@ function test(){
 	var rows = tb.rows;	
 	var information = new Array();
 	for(var i = 1; i<rows.length; i++ ){
+		information[i]="";
 	   for(var j = 0; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
-		   //information[i]=i;
-		   var str=rows[i].cells[j].innerHTML;
-		   str = str.match(/"true">(\S*)</div/)[1]; 
-			alert(str);
-		   alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+rows[i].cells[j].innerHTML);           // 输出每个td的内容
+		    
+			var str=rows[i].cells[j].innerHTML;
+			str = str.match(/"true">(\S*)<\/div>/)[1]; 
+			information[i]=information[i]+str;
+			//alert(str);
+		  // alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+str);           // 输出每个td的内容
 	   }
 	}
+	
+	if (!window.localStorage) {
+	  console.log('浏览器版本太低，不支持localStorage');
+	} 
+	else {
+	 let storage = window.localStorage;
+	 for(var i=0;i<rows.length;i++){
+		//storage.setItem(i, information[i]);
+		log.console(information[i]);
+		}
 	}
+}
 function saveToLocal(){
 	if (!window.localStorage) {
 	  console.log('浏览器版本太低，不支持localStorage')
