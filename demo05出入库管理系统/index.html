@@ -5,18 +5,36 @@
 	<meta name='viewport' content='width=device-width'>
 	<title>wellcome to my website</title>
 	<script>
+	var num=0;
 function addRow(){
     var oTable = document.getElementById("oTable");
     var tBodies = oTable.tBodies;
     var tbody = tBodies[0];
     var tr = tbody.insertRow(tbody.rows.length);
     var td_1 = tr.insertCell(0);
-    td_1.innerHTML = "<div contenteditable='true'></div>";
+    td_1.innerHTML = num;
+	num++;
     var td_2 = tr.insertCell(1);
     td_2.innerHTML = "<div contenteditable='true'></div>";
 	var td_3 = tr.insertCell(2);
     td_3.innerHTML = "<div contenteditable='true'></div>";
+	var td_4 = tr.insertCell(3);
+    td_4.innerHTML = "<div contenteditable='true'></div>";
     }
+function test(){
+	var tb = document.getElementById('oTable');
+	var rows = tb.rows;	
+	var information = new Array();
+	for(var i = 1; i<rows.length; i++ ){
+	   for(var j = 0; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
+		   //information[i]=i;
+		   var str=rows[i].cells[j].innerHTML;
+		   str = str.match(/"true">(\S*)</div/)[1]; 
+			alert(str);
+		   alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+rows[i].cells[j].innerHTML);           // 输出每个td的内容
+	   }
+	}
+	}
 function saveToLocal(){
 	if (!window.localStorage) {
 	  console.log('浏览器版本太低，不支持localStorage')
@@ -49,6 +67,7 @@ function saveToLocal(){
 <table id="oTable"  border="3" >
 <thead>
 <tr>
+<th>序号</th>
 <th>产品名称</th>
 <th>型号</th>
 <th>数量</th>
@@ -60,9 +79,30 @@ function saveToLocal(){
 </fieldset>
 <input type="button" onClick="addRow();" style="font-size:16px;" value="新增产品信息"/>
 <input type="button" onClick="saveToLocal();" style="font-size:16px;" value="导入到excel并刷新页面"/>
+<input type="button" onClick="getInformationFromTable();" style="font-size:16px;" value="getInformationFromTable"/>
+<input type="button" onClick="test();" style="font-size:16px;" value="西瓜"/>
 	<br/>
 	<br/>
 	<br/>
+	<table id="tab" border="1" align="center">
+
+      <tr>
+         <td>西瓜</td>
+         <td>橙</td>
+      </tr>
+
+      <tr>
+         <td>芒果</td>
+         <td>桔子</td>
+      </tr>
+
+      <tr>
+         <td>奇异果</td>
+         <td>葡萄</td>
+         <td>西柚</td>
+      </tr>
+
+   </table>
 	 <section id='games'>
 		 <div class='game_Alto_Odyssey'>
 			 	<img src='html_program/icon.png'>
