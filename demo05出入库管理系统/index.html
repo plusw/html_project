@@ -5,6 +5,29 @@
 	<meta name='viewport' content='width=device-width'>
 	<title>wellcome to my website</title>
 	<script>
+	 function handleLocalStorage(method, key, value) {
+  switch (method) {
+    case 'get' : {
+      let temp = window.localStorage.getItem(key);
+      if (temp) {
+        return temp
+      } else {
+        return false
+      }
+    }
+    case 'set' : {
+      window.localStorage.setItem(key, value);
+      break
+    }
+    case 'remove': {
+      window.localStorage.removeItem(key);
+      break
+    }
+    default : {
+      return false
+    }
+  }
+}
 	var num=0;
 function addRow(){
     var oTable = document.getElementById("oTable");
@@ -12,7 +35,7 @@ function addRow(){
     var tbody = tBodies[0];
     var tr = tbody.insertRow(tbody.rows.length);
     var td_1 = tr.insertCell(0);
-    td_1.innerHTML = "<div contenteditable='true'>"+num+"</div>";
+    td_1.innerHTML = "<div contenteditable='false'>"+num+"</div>";
 	num++;
     var td_2 = tr.insertCell(1);
     td_2.innerHTML = "<div contenteditable='true'></div>";
@@ -21,17 +44,16 @@ function addRow(){
 	var td_4 = tr.insertCell(3);
     td_4.innerHTML = "<div contenteditable='true'></div>";
     }
-function test(){
+function saveToLocal(){
 	var tb = document.getElementById('oTable');
 	var rows = tb.rows;	
 	var information = new Array();
 	for(var i = 1; i<rows.length; i++ ){
 		information[i]="";
-	   for(var j = 0; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
-		    
+	   for(var j = 1; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
 			var str=rows[i].cells[j].innerHTML;
 			str = str.match(/"true">(\S*)<\/div>/)[1]; 
-			information[i]=information[i]+str;
+			information[i]=information[i]+str+"#";
 			//alert(str);
 		  // alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+str);           // 输出每个td的内容
 	   }
@@ -43,21 +65,14 @@ function test(){
 	else {
 	 let storage = window.localStorage;
 	 for(var i=0;i<rows.length;i++){
-		//storage.setItem(i, information[i]);
-		log.console(information[i]);
+		handleLocalStorage('set',i-1, information[i]);
+		//log.console(information[i]);
 		}
 	}
 }
-function saveToLocal(){
-	if (!window.localStorage) {
-	  console.log('浏览器版本太低，不支持localStorage')
-	} else {
-	  let storage = window.localStorage
-	  storage.setItem('产品名称', '502') // 存储名为a值为1的变量
-	  storage.b = 2           // 存储名为b值为2的变量
-	  storage['c'] = 3        // 存储名为c值为3的变量
-	}
+fuction getInformationfromloacl(){
 }
+
 	</script>
 	<link  href='html_program/319.css' type='text/css' rel='stylesheet'>
 	<meta name='author' content='plus'>
@@ -91,9 +106,8 @@ function saveToLocal(){
 </table>
 </fieldset>
 <input type="button" onClick="addRow();" style="font-size:16px;" value="新增产品信息"/>
-<input type="button" onClick="saveToLocal();" style="font-size:16px;" value="导入到excel并刷新页面"/>
-<input type="button" onClick="getInformationFromTable();" style="font-size:16px;" value="getInformationFromTable"/>
-<input type="button" onClick="test();" style="font-size:16px;" value="西瓜"/>
+<input type="button" onClick="saveToLocal();" style="font-size:16px;" value="saveToLocal"/>
+
 	<br/>
 	<br/>
 	<br/>
