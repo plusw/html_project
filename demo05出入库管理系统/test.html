@@ -1,0 +1,37 @@
+<script>
+function test(){
+	var tb = document.getElementById('tab');    // table 的 id
+	var rows = tb.rows;                           // 获取表格所有行
+	for(var i = 0; i<rows.length; i++ ){
+	   for(var j = 0; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
+		   alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+rows[i].cells[j].innerHTML+"。");           // 输出每个td的内容
+	   }
+	}
+}
+</script>
+<div align="center">
+   <table id="tab" border="1" align="center">
+
+      <tr>
+         <td>西瓜</td>
+         <td>橙</td>
+      </tr>
+
+      <tr>
+         <td>芒果</td>
+         <td>桔子</td>
+      </tr>
+
+      <tr>
+         <td>奇异果</td>
+         <td>葡萄</td>
+         <td>西柚</td>
+      </tr>
+
+   </table>
+
+<br>
+
+   <input type="button" onClick="test();" style="font-size:16px;" value="button"/>
+
+</div>
