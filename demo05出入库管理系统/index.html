@@ -5,7 +5,7 @@
 	<meta name='viewport' content='width=device-width'>
 	<title>wellcome to my website</title>
 	<script>
-	 function handleLocalStorage(method, key, value) {//https://blog.csdn.net/bocongbo/article/details/81772157   js操作localstorage
+	 function handleLocalStorage(method, key, value) {//https://blog.csdn.net/bocongbo/article/details/81772157       //https://www.codehui.net/info/46.html   js操作localstorage
   switch (method) {
     case 'get' : {
       let temp = window.localStorage.getItem(key);
@@ -43,6 +43,7 @@ function addRow(){
     td_3.innerHTML = "<div contenteditable='true'></div>";
 	var td_4 = tr.insertCell(3);
     td_4.innerHTML = "<div contenteditable='true'></div>";
+	
     }
 function saveToLocal(){
 	var tb = document.getElementById('oTable');
@@ -70,8 +71,11 @@ function saveToLocal(){
 		}
 	}
 }
-fuction getInformationfromloacl(){ 
-
+function getInformationfromloacl(){ 
+	//alert(handleLocalStorage("get",1));
+	//localStorage.clear();
+	alert(localStorage.length);
+	
 }
 
 	</script>
@@ -108,7 +112,7 @@ fuction getInformationfromloacl(){
 </fieldset>
 <input type="button" onClick="addRow();" style="font-size:16px;" value="新增产品信息"/>
 <input type="button" onClick="saveToLocal();" style="font-size:16px;" value="saveToLocal"/>
-
+<input type="button" onClick="getInformationfromloacl();" style="font-size:16px;" value="getInformationfromloacl"/>
 	<br/>
 	<br/>
 	<br/>
