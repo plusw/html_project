@@ -34,12 +34,17 @@ https://www.cnblogs.com/tobebetter-fanfan/articles/5423186.html
 		str = str.search(/\//);  
 		alert(str);//结果为3
 	}
+	function test6(){//寻找/的位置
+		var str = '#夜明珠<br>#小<br>#2#'; 
+		str = str.search(/#(\S*)#/);  
+		alert(str);//结果为3
+	}
 	
 	</script>
 	<meta name='author' content='plus'>
  </head>
  <body>
-	<input type="button" onClick="test5();" style="font-size:16px;" value="测试正则表达式"/>
+	<input type="button" onClick="test6();" style="font-size:16px;" value="测试正则表达式"/>
  </body>
  <footer>
 	 <p>Plus W, Copyright &copy; 2020</p>

@@ -33,6 +33,7 @@ function addRow(){
     var oTable = document.getElementById("oTable");
     var tBodies = oTable.tBodies;
     var tbody = tBodies[0];
+	//alert(tbody.rows.length);
     var tr = tbody.insertRow(tbody.rows.length);
     var td_1 = tr.insertCell(0);
     td_1.innerHTML = "<div contenteditable='false'>"+num+"</div>";
@@ -43,14 +44,13 @@ function addRow(){
     td_3.innerHTML = "<div contenteditable='true'></div>";
 	var td_4 = tr.insertCell(3);
     td_4.innerHTML = "<div contenteditable='true'></div>";
-	
     }
 function saveToLocal(){
 	var tb = document.getElementById('oTable');
 	var rows = tb.rows;	
 	var information = new Array();
 	for(var i = 1; i<rows.length; i++ ){
-		information[i]="";
+		information[i]="#";
 	   for(var j = 1; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
 			var str=rows[i].cells[j].innerHTML;
 			str = str.match(/"true">(\S*)<\/div>/)[1]; 
@@ -74,10 +74,31 @@ function saveToLocal(){
 function getInformationfromloacl(){ 
 	//alert(handleLocalStorage("get",1));
 	//localStorage.clear();
-	alert(localStorage.length);
+	//alert(localStorage.length);
+	//location.reload();
+	for(var i=0;i<localStorage.length;i++){
 	
+		var oTable = document.getElementById("oTable");
+		var tBodies = oTable.tBodies;
+		
+		var tbody = tBodies[0];
+		var tr = tbody.insertRow(tbody.rows.length);
+		
+		alert(handleLocalStorage("get",i));
+		var td_1 = tr.insertCell(0);
+		td_1.innerHTML = "<div contenteditable='false'>"+i+"</div>";//前面的序号
+		
+		var td_2 = tr.insertCell(1);//产品名称
+		var productName;
+		td_2.innerHTML = "<div contenteditable='true'>"+handleLocalStorage("get",i)+"</div>";
+		
+		var td_3 = tr.insertCell(2);
+		td_3.innerHTML = "<div contenteditable='true'></div>";
+		var td_4 = tr.insertCell(3);
+		td_4.innerHTML = "<div contenteditable='true'></div>";
+		
+	}
 }
-
 	</script>
 	<link  href='html_program/319.css' type='text/css' rel='stylesheet'>
 	<meta name='author' content='plus'>
