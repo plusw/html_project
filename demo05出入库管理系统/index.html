@@ -5,6 +5,11 @@
 	<meta name='viewport' content='width=device-width'>
 	<title>wellcome to my website</title>
 	<script>
+	window.onload = function()//打开页面就运行这段js代码
+        {
+            getInformationfromloacl();
+        }
+	//封装操作localStroge方法
 	 function handleLocalStorage(method, key, value) {//https://blog.csdn.net/bocongbo/article/details/81772157       //https://www.codehui.net/info/46.html   js操作localstorage
   switch (method) {
     case 'get' : {
@@ -29,10 +34,12 @@
   }
 }
 	var num=0;
-function addRow(){
+function addRow(){//加行
+	//localStorage.clear();
     var oTable = document.getElementById("oTable");
     var tBodies = oTable.tBodies;
     var tbody = tBodies[0];
+	//alert(tbody.rows.length);
     var tr = tbody.insertRow(tbody.rows.length);
     var td_1 = tr.insertCell(0);
     td_1.innerHTML = "<div contenteditable='false'>"+num+"</div>";
@@ -43,18 +50,20 @@ function addRow(){
     td_3.innerHTML = "<div contenteditable='true'></div>";
 	var td_4 = tr.insertCell(3);
     td_4.innerHTML = "<div contenteditable='true'></div>";
-	
     }
-function saveToLocal(){
+function saveToLocal(){//储存当前数据到loaclStroge
 	var tb = document.getElementById('oTable');
 	var rows = tb.rows;	
 	var information = new Array();
 	for(var i = 1; i<rows.length; i++ ){
-		information[i]="";
+		information[i]="#";
 	   for(var j = 1; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
 			var str=rows[i].cells[j].innerHTML;
-			str = str.match(/"true">(\S*)<\/div>/)[1]; 
-			information[i]=information[i]+str+"#";
+			str = str.match(/"true">(\S*)<\/div>/)[1];
+			information[i]=information[i]+str;
+			for(var k=0;k<j+1;k++){//
+				information[i]=information[i]+"#";//#玻璃#透明##1###，方便正则匹配找出信息
+			}
 			//alert(str);
 		  // alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+str);           // 输出每个td的内容
 	   }
@@ -65,17 +74,44 @@ function saveToLocal(){
 	} 
 	else {
 	 let storage = window.localStorage;
-	 for(var i=0;i<rows.length;i++){
+	 for(var i=1;i<rows.length;i++){
 		handleLocalStorage('set',i-1, information[i]);
 		//log.console(information[i]);
 		}
 	}
 }
-function getInformationfromloacl(){ 
+function getInformationfromloacl(){ //从localStorage的数据传至表格
 	//alert(handleLocalStorage("get",1));
-	//localStorage.clear();
-	alert(localStorage.length);
+	//alert(localStorage.length);
+	//location.reload();
+	for(var i=0;i<localStorage.length;i++){
 	
+		var oTable = document.getElementById("oTable");
+		var tBodies = oTable.tBodies;
+		
+		var tbody = tBodies[0];
+		var tr = tbody.insertRow(tbody.rows.length);
+		
+		var td_1 = tr.insertCell(0);
+		td_1.innerHTML = "<div contenteditable='false'>"+i+"</div>";//前面的序号
+		
+		var td_2 = tr.insertCell(1);//产品名称
+		var productName = handleLocalStorage("get",i).match(/#(\S*?)##/)[1];
+		td_2.innerHTML = "<div contenteditable='true'>"+productName+"</div>";
+		
+		var td_3 = tr.insertCell(2);//型号
+		var model = handleLocalStorage("get",i).match(/##(\S*?)###/)[1];
+		td_3.innerHTML = "<div contenteditable='true'>"+model+"</div>";
+		
+		var td_4 = tr.insertCell(3);//数量
+		var quantity = handleLocalStorage("get",i).match(/###(\S*?)####/)[1];
+		td_4.innerHTML = "<div contenteditable='true'>"+quantity+"</div>";
+		
+	}
+	
+}
+function clearAllLocaStorage(){
+	localStorage.clear();
 }
 
 	</script>
@@ -112,7 +148,7 @@ function getInformationfromloacl(){
 </fieldset>
 <input type="button" onClick="addRow();" style="font-size:16px;" value="新增产品信息"/>
 <input type="button" onClick="saveToLocal();" style="font-size:16px;" value="saveToLocal"/>
-<input type="button" onClick="getInformationfromloacl();" style="font-size:16px;" value="getInformationfromloacl"/>
+<input type="button" onClick="clearAllLocaStorage();" style="font-size:16px;" value="清除所有信息"/>
 	<br/>
 	<br/>
 	<br/>

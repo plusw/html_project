@@ -34,12 +34,18 @@ https://www.cnblogs.com/tobebetter-fanfan/articles/5423186.html
 		str = str.search(/\//);  
 		alert(str);//结果为3
 	}
+	function test6(){//用非贪婪匹配，加?
+		var str = '#夜明珠#Q##3###'; 
+		//alert("hello");
+		str = str.match(/#(\S*?)#/)[1];  
+		alert(str);//
+	}
 	
 	</script>
 	<meta name='author' content='plus'>
  </head>
  <body>
-	<input type="button" onClick="test5();" style="font-size:16px;" value="测试正则表达式"/>
+	<input type="button" onClick="test6();" style="font-size:16px;" value="测试正则表达式"/>
  </body>
  <footer>
 	 <p>Plus W, Copyright &copy; 2020</p>
