@@ -114,16 +114,39 @@ function clearAllLocaStorage(){
 	localStorage.clear();
 }
 
-function search(){
+function search(){//搜索功能
 	let key=document.querySelector("#search");
 	key=key.value;
 	key2="/"+key+"/i";
-	//alert(key);
+	alert(key);
 	
 	for(var i=0;i<localStorage.length;i++){
 		str=handleLocalStorage("get",i);
-		if(str.search(eval(key2))){
+		if(str.search(eval(key2))!=-1){
 			alert(str);
+			
+			var oTable = document.getElementById("search_result");
+			var tBodies = oTable.tBodies;
+			var tbody = tBodies[0];
+			var tr = tbody.insertRow(tbody.rows.length);
+			
+			var td_1 = tr.insertCell(0);
+			td_1.innerHTML = "<div contenteditable='false'>"+i+"</div>";//前面的序号
+			
+			var td_2 = tr.insertCell(1);//产品名称
+			var productName = handleLocalStorage("get",i).match(/#(\S*?)##/)[1];
+			td_2.innerHTML = "<div contenteditable='true'>"+productName+"</div>";
+			
+			var td_3 = tr.insertCell(2);//型号
+			var model = handleLocalStorage("get",i).match(/##(\S*?)###/)[1];
+			td_3.innerHTML = "<div contenteditable='true'>"+model+"</div>";
+			
+			var td_4 = tr.insertCell(3);//数量
+			var quantity = handleLocalStorage("get",i).match(/###(\S*?)####/)[1];
+			td_4.innerHTML = "<div contenteditable='true'>"+quantity+"</div>";
+				
+			var tbody = tBodies[0];
+			var tr = tbody.insertRow(tbody.rows.length);
 			return str;
 		}
 	}
@@ -176,25 +199,19 @@ function search(){
         <input type="button" onClick="search();" style="font-size:16px;" value="搜索"/>> 
 
     </div>
-	<table id="tab" border="1" align="center">
-
-      <tr>
-         <td>西瓜</td>
-         <td>橙</td>
-      </tr>
-
-      <tr>
-         <td>芒果</td>
-         <td>桔子</td>
-      </tr>
-
-      <tr>
-         <td>奇异果</td>
-         <td>葡萄</td>
-         <td>西柚</td>
-      </tr>
-
-   </table>
+	<legend>可编辑的表格</legend>
+<table id="search_result"  border="3" >
+<thead>
+<tr>
+<th>序号</th>
+<th>产品名称</th>
+<th>型号</th>
+<th>数量</th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
 	 <section id='games'>
 		 <div class='game_Alto_Odyssey'>
 			 	<img src='html_program/icon.png'>
