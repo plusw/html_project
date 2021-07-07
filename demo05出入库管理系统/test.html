@@ -1,37 +1,93 @@
-<script>
-function test(){
-	var tb = document.getElementById('tab');    // table 的 id
-	var rows = tb.rows;                           // 获取表格所有行
-	for(var i = 0; i<rows.length; i++ ){
-	   for(var j = 0; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
-		   alert("第"+(i+1)+"行，第"+(j+1)+"个td的值："+rows[i].cells[j].innerHTML+"。");           // 输出每个td的内容
-	   }
-	}
-}
-</script>
-<div align="center">
-   <table id="tab" border="1" align="center">
+<!DOCTYPE html>
 
-      <tr>
-         <td>西瓜</td>
-         <td>橙</td>
-      </tr>
+<html>
 
-      <tr>
-         <td>芒果</td>
-         <td>桔子</td>
-      </tr>
+<head>
 
-      <tr>
-         <td>奇异果</td>
-         <td>葡萄</td>
-         <td>西柚</td>
-      </tr>
+<meta charset="utf-8">
 
-   </table>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-<br>
+<title>Examples</title>
 
-   <input type="button" onClick="test();" style="font-size:16px;" value="button"/>
+<meta name="description" content="">
 
-</div>
+<meta name="keywords" content="">
+
+<link href="" rel="stylesheet">
+
+<style type="text/css">
+
+    #box{
+
+        width: 380px;
+
+        margin: 30px auto;
+
+        font-family: 'Microsoft YaHei';
+
+        font-size: 14px;
+
+    }
+
+    input{
+
+        width: 260px;
+
+        border: 1px solid #e2e2e2;
+
+        height: 30px;
+
+        float: left;
+
+        background-image: url(images/search.jpg);
+
+        background-repeat: no-repeat;
+
+        background-size: 25px;
+
+        background-position:5px center;
+
+        padding:0 0 0 40px;
+
+    }
+
+    #search{
+
+        width: 78px;
+
+        height: 32px;
+
+        float: right;
+
+        background: black;
+
+        color: white;
+
+        text-align: center;
+
+        line-height: 32px;
+
+        cursor: pointer;
+
+    }
+
+  
+
+</style>
+
+</head>
+
+<body>
+
+    <div id="box">
+
+        <input type="search" name="search" placeholder="请输入关键字">
+
+        <div id="search">搜索</div> 
+
+    </div>
+
+</body>
+
+</html>
