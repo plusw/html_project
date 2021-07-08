@@ -48,12 +48,18 @@ https://www.cnblogs.com/tobebetter-fanfan/articles/5423186.html
 		str = str.search(eval(a));  
 		alert(str);//
 	}
+	function test8(){//
+		var str = '<div contenteditable="true">0</div>'; 
+		//alert("hello");
+		str = str.match(/"false">(\S*)<\/div/)[1];  
+		alert(str);//
+	}
 	
 	</script>
 	<meta name='author' content='plus'>
  </head>
  <body>
-	<input type="button" onClick="test7();" style="font-size:16px;" value="测试正则表达式"/>
+	<input type="button" onClick="test8();" style="font-size:16px;" value="测试正则表达式"/>
  </body>
  <footer>
 	 <p>Plus W, Copyright &copy; 2020</p>
