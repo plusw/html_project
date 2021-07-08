@@ -42,7 +42,7 @@ function addRow(){//加行
 	//alert(tbody.rows.length);
     var tr = tbody.insertRow(tbody.rows.length);
     var td_1 = tr.insertCell(0);
-    td_1.innerHTML = "<div contenteditable='false'>"+num+"</div>";
+    td_1.innerHTML = "<div contenteditable='true'>"+num+"</div>";
 	num++;
     var td_2 = tr.insertCell(1);
     td_2.innerHTML = "<div contenteditable='true'></div>";
@@ -114,43 +114,37 @@ function clearAllLocaStorage(){
 	localStorage.clear();
 }
 
-function search(){//搜索功能
-	let key=document.querySelector("#search");
+function search(){//搜索功能,默认隐藏search_result,搜索到显现search_result
+	let key=document.querySelector("#search_key");
 	key=key.value;
 	key2="/"+key+"/i";
-	alert(key);
+	//alert(key);
 	
 	for(var i=0;i<localStorage.length;i++){
 		str=handleLocalStorage("get",i);
 		if(str.search(eval(key2))!=-1){
-			alert(str);
+			//alert(str);
+			//显现search_result
+			var searchTable = document.getElementById("search_result");    
+			searchTable.style.display = "";
+			var search_save_to_local_button = document.getElementById("search_save_button");   //button 
+			search_save_to_local_button.style.display = "";
 			
-			var oTable = document.getElementById("search_result");
-			var tBodies = oTable.tBodies;
-			var tbody = tBodies[0];
-			var tr = tbody.insertRow(tbody.rows.length);
-			
-			var td_1 = tr.insertCell(0);
-			td_1.innerHTML = "<div contenteditable='false'>"+i+"</div>";//前面的序号
-			
-			var td_2 = tr.insertCell(1);//产品名称
-			var productName = handleLocalStorage("get",i).match(/#(\S*?)##/)[1];
-			td_2.innerHTML = "<div contenteditable='true'>"+productName+"</div>";
-			
-			var td_3 = tr.insertCell(2);//型号
-			var model = handleLocalStorage("get",i).match(/##(\S*?)###/)[1];
-			td_3.innerHTML = "<div contenteditable='true'>"+model+"</div>";
-			
-			var td_4 = tr.insertCell(3);//数量
-			var quantity = handleLocalStorage("get",i).match(/###(\S*?)####/)[1];
-			td_4.innerHTML = "<div contenteditable='true'>"+quantity+"</div>";
-				
-			var tbody = tBodies[0];
-			var tr = tbody.insertRow(tbody.rows.length);
+			var myTableSecondRow= document.getElementById('search_result').rows[1].cells;
+			myTableSecondRow[0].innerHTML="<div contenteditable='true'>"+i+"</div>"//序号
+			var productName = handleLocalStorage("get",i).match(/#(\S*?)##/)[1];//productName
+			myTableSecondRow[1].innerHTML="<div contenteditable='true'>"+productName+"</div>";
+			var model = handleLocalStorage("get",i).match(/##(\S*?)###/)[1];//model型号
+			myTableSecondRow[2].innerHTML="<div contenteditable='true'>"+model+"</div>";
+			var quantity = handleLocalStorage("get",i).match(/###(\S*?)####/)[1];//数量
+			myTableSecondRow[3].innerHTML="<div contenteditable='true'>"+quantity+"</div>";
 			return str;
 		}
 	}
 	return "nothing";
+	
+}
+function searchChange(){
 	
 }
 
@@ -195,12 +189,12 @@ function search(){//搜索功能
 	<br/>
 	<div id="box">
 
-        <input type="search" name="search" placeholder="请输入关键字" id="search">
-        <input type="button" onClick="search();" style="font-size:16px;" value="搜索"/>> 
-
+        <input type="search" name="search" placeholder="请输入关键字" id="search_key">
+        <input type="button" onClick="search();" style="font-size:16px;" value="搜索" id="search_button"/> 
+		
+		
     </div>
-<legend visibility="false">搜索出的表格</legend>
-<table id="search_result"  border="3" >
+<table id="search_result"  border="3" style="display:none" id="button_default_hidden_of_search"><!--默认隐藏search_result-->
 <thead>
 <tr>
 <th>序号</th>
@@ -210,47 +204,13 @@ function search(){//搜索功能
 </tr>
 </thead>
 <tbody>
+<td contenteditable='true'></td>
+<td contenteditable='true'></td>
+<td contenteditable='true'></td>
+<td contenteditable='true'></td>
 </tbody>
 </table>
-	 <section id='games'>
-		 <div class='game_Alto_Odyssey'>
-			 	<img src='html_program/icon.png'>
-				<a href='html_program/game1.html'>
-					<p>Alto's Odyssey, a mobile game</p>
-				</a>
-		 </div>
-		 <br/>
-		 <br/>
-		 <br/>
-		 <div class='game_Monument_Valley2'>
-			 <img src='html_program/icon2.jpg'>
-			 <a href='html_program/game2.html'>
-				<p>Monument Valley2, a paid mobile game</p>
-			 </a>
-		 </div>
-		<br/>
-		<br/>
-		<br/>
-	 </section>
-	 <section id='pictures'>
-		 <div class='all_picture'>
-		 	<div class='picture'>	
-		 		<img src='html_program/bear.jpg'>
-		 	</div>
-		 	<div class='picture'>	
-	 	 		<img src='html_program/cat0.jpg'>
-		 	</div>
-			<div class='picture'>	
-	 	 		<img src='html_program/cat1.jpg'>
-		 	</div>
-			<div class='picture'>	
-	 	 		<img src='html_program/dog.jpg'>
-		 	</div>
-			<div class='picture'>	
-	 	 		<img src='html_program/girl.jpg'>
-		 	</div>
-		 </div>
-	 </section>
+<input type="button" onClick="searchChange();" style="font-size:16px;display:none" value="saveToLocal" id="search_save_button"/>
  </body>
  <footer>
 	 <p>Plus W, Copyright &copy; 2020</p>
