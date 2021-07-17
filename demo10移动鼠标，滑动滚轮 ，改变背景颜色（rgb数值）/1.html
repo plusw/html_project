@@ -1,0 +1,107 @@
+<script type="text/javascript">
+    var c=200;
+    var a=127;
+    var b=127;
+   function rgbToHex(r, g, b) {
+  return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+}
+/*
+document.addEventListener('click',function(e){
+    //console.log(e.clientX);
+    //console.log(e.clientY);
+    //console.log(document.documentElement.clientWidth);
+    //console.log(document.documentElement.clientHeight);
+    a=Math.ceil(e.clientX/document.documentElement.clientWidth*255);
+    b=Math.ceil(e.clientY/document.documentElement.clientHeight*255);
+    document.getElementById('X').innerHTML=a;
+    document.getElementById('Y').innerHTML=b;
+    document.bgColor=rgbToHex(a,b,c);
+}) 
+*/
+(function() {
+    document.onmousemove = handleMouseMove;
+    function handleMouseMove(event) {
+        var eventDoc, doc, body;
+
+        event = event || window.event; // IE-ism
+
+        // If pageX/Y aren't available and clientX/Y are,
+        // calculate pageX/Y - logic taken from jQuery.
+        // (This is to support old IE)
+        if (event.pageX == null && event.clientX != null) {
+            eventDoc = (event.target && event.target.ownerDocument) || document;
+            doc = eventDoc.documentElement;
+            body = eventDoc.body;
+
+            event.pageX = event.clientX ;/*+
+              (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+              (doc && doc.clientLeft || body && body.clientLeft || 0);*/
+            event.pageY = event.clientY ;/*+
+              (doc && doc.scrollTop  || body && body.scrollTop  || 0) -
+              (doc && doc.clientTop  || body && body.clientTop  || 0 );*/
+        }
+            
+                
+                a=Math.ceil(event.pageX/document.documentElement.clientWidth*255);
+                b=Math.ceil(event.pageY/document.documentElement.clientHeight*255);
+                document.getElementById('X').innerHTML=a;
+                document.getElementById('Y').innerHTML=b;
+                document.bgColor=rgbToHex(a,b,c);
+        // Use event.pageX / event.pageY here
+    }
+})();
+var scrollFunc = function (e) {
+        e = e || window.event;
+        if (e.wheelDelta) {//IE/Opera/Chrome
+            if (e.wheelDelta>0){
+                c=c+3;
+                if(c>255){
+                    c=255;
+                }
+            }
+            else{
+                c=c-3;
+                if(c<0){
+                    c=0;
+                }
+            }
+        }
+        
+        document.getElementById('Z').innerHTML=c;
+        
+        document.bgColor=rgbToHex(a,b,c);
+    }
+if (document.addEventListener) {
+    document.addEventListener('DOMMouseScroll', scrollFunc, false);
+}//W3C
+window.onmousewheel = document.onmousewheel = scrollFunc;//IE/Opera/Chrome/Safari
+    
+    
+</script>
+<style>
+    body{
+        font-family: Helvetica;
+    }
+    #rgb{
+        color: white;
+        text-align: center;
+        margin-top: 300px;
+    }
+    h2{
+        color: white;
+    }
+</style>
+<html>
+    <head>
+        <title>123</title>
+    </head>
+    <body >
+        
+        <!--<p><script>document.write(c);</script></p>-->
+        <h2>Move the mouse and scroll the wheel to change the RPG value,  press F11 can get full screen<h2>
+        <div id="rgb">
+        <h1> RGB( <span id='X'>127</span> , <span id='Y'>127</span> , <span id="Z">200</span> )</h1>
+        </div>
+ 
+    </body>
+</html>

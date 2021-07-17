@@ -8,12 +8,9 @@
 	<script>
 	
 	function test(){
-		var a=[2,5,6,4,3];
-		alert(a);
-		a=mySort(a);
-		alert(a);
+		alert(copy(JSON.stringify(localStorage)));
 	}
-	function mySort(input_array){
+	function mySort(input_array){//数组排序函数
 		var array=input_array;
 		var biggest_index;
     //比较轮数
@@ -86,7 +83,7 @@ function saveToLocal(){//储存当前数据到loaclStroge
 	for(var i = 1; i<rows.length; i++ ){
 		//获取序号
 		var str0=rows[i].cells[0].innerHTML;
-		alert(str0);
+		//alert(str0);
 		if(str0.match(/>(\S*)</)[1]!=null){
 			str0 = str0.match(/>(\S*)</)[1]; 
 		}
@@ -289,7 +286,7 @@ function searchChangeSave(){//先搜索改变信息,储存到loaclStroge
 	 </header>
 	 <section id='showcase'>
 		 <div class='container'>
-			 <p>Wellcome to my website. It is my first website, there are two mobile games I shared.</p>
+			 <p>Wellcome to my website. </p>
 		 </div>
 	</section>
 	<fieldset>
@@ -310,7 +307,7 @@ function searchChangeSave(){//先搜索改变信息,储存到loaclStroge
 <input type="button" onClick="addRow();" style="font-size:16px;" value="新增产品信息"/>
 <input type="button" onClick="saveToLocal();" style="font-size:16px;" value="saveToLocal"/>
 <input type="button" onClick="clearAllLocaStorage();" style="font-size:16px;" value="清除所有信息"/>
-<input type="button" onClick="test();" style="font-size:16px;" value="Test"/>
+<input type="button" onClick="test();" style="font-size:16px;" value="test"/>
 	<br/>
 	<br/>
 	<br/>
