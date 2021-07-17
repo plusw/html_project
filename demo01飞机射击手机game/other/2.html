@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <style>
+    	* { padding: 0; margin: 0; }
+    	canvas { background: #fff; display: block; margin: 0 auto; }
+        #start_game{
+            margin-top: 150px;
+            text-align: center;
+        }
+        #btn{
+                width: 100px; 
+                height: 40px;
+                border-width: 0px; 
+                border-radius: 3px;
+                background: #1E90FF;
+                cursor: pointer; 
+                outline: none; 
+                font-family: Microsoft YaHei;
+                color: white; 
+                font-size: 17px; 
+            }
+    </style>
+    <title>plane war</title>
+</head>
+<body>
+<div  id='start_game'>
+    <div>
+    <img src='cover.jpg'>
+    </div>
+    <br>
+    <button id="btn">开始游戏</button>
+    <br><br><br><br>
+    <p>how to play: press  a and d  to move</p>
+</div>
+    
+<canvas id="myCanvas" width="480" height="320"></canvas>
+<script>
+    document.getElementById("btn").onclick=function(){
+        requestFullScreen();
+        main();
+   };
+    function requestFullScreen() {
+        var element = document.getElementById('myCanvas');
+        var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+        if (requestMethod) {
+            requestMethod.call(element);
+        } else if (typeof window.ActiveXObject !== "undefined") {
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+    }
+function main(){
+    var canvas=document.getElementById('myCanvas');
+    canvas.width=1366;
+    canvas.height=768;
+    var ctx=canvas.getContext('2d');
+    var dt = new Date();
+    var game_start_time=dt.getTime();
+    var game_time;
+    var player_rolate_angle=0;
+    var player_rolate_speed=3;
+    var player_width=64;
+    var player_height=64;
+    var player_x=canvas.width/2-player_width/2;
+    var player_y=canvas.height/2-player_height/2; 
+    var player_speed=5;
+    var rightPressed = false;
+    var leftPressed = false;
+    var upPressed = false;
+    var downPressed = false;
+    var player_fire_intervals=150;
+    var bullet_array=[];
+    var bullet_number=0;
+    var bullet_out_number=0;
+    var bullet_speed=10;
+    var bullet_picture_width=18;
+    var bullet_picture_height=33;
+    var ufo_width=81;
+    var ufo_height=42;
+    var ufo_array=[];
+    var ufo_number=30;
+    var ufo_that_be_hitted=[];
+    var bullet_that_hit_ufo=[];
+    var ufo_bullet_begin_array=[];
+    var ufo_bullet_speed=6;
+    var have_set_ufo_bullet_number=0;
+    var ufo_bullet_array=[];
+    var ufo_bullet_img_width=19;
+    var ufo_bullet_img_height=19;
+    var player_lives=3;
+    var animation_position=[];
+    var animation_array=[];
+    var have_set_animation=0;
+    picture_explosion_array=[];
+    picture_explosion_array[0]='explosion.png';
+    picture_explosion_array[1]='explosion2.png';
+    picture_explosion_array[2]='explosion3.png';
+    picture_explosion_array[3]='explosion4.png';
+    picture_explosion_array[4]='explosion5.png';
+    picture_explosion_array[5]='explosion6.png';
+    picture_explosion_array[6]='explosion7.png';
+    picture_explosion_array[7]='explosion8.png';
+    picture_explosion_array[8]='explosion9.png';
+    var sound_open=false;
+    var player_initial_x=player_x;
+    var player_initial_y=player_y;
+    var scene_move_x=0;
+    var scene_move_y=0;
+    var background_x=0;
+    var background_y=0;
+    var bg=new Image();
+    var circle_r=700;
+    
+
+var img=new Image();
+    img.src='bg.jpg';
+function draw_bg(){
+    ctx.drawImage(img,scene_move_x,scene_move_y);
+    ctx.drawImage(img,scene_move_x,scene_move_y-768);
+}
+function draw_background(background_name){
+    bg.src=(background_name);
+    ctx.drawImage(bg,background_x+scene_move_x,background_y+scene_move_y);
+}
+function draw_circle(){
+    ctx.beginPath();
+    ctx.arc(player_x+player_width/2+scene_move_x,player_y+player_height/2+scene_move_y,circle_r, 0, 2 * Math.PI);
+    ctx.fillStyle='black';
+    ctx.fill();
+    ctx.closePath();
+}
+function scene_move_by_player(){
+    scene_move_x=-(player_x-player_initial_x);
+    scene_move_y=-(player_y-player_initial_y);
+}
+
+function calculate_player_bullet_trajectory(player_angle,bullet_speed){
+    var V_x=bullet_speed*Math.sin(player_angle*Math.PI/180);
+    var V_y=-bullet_speed*Math.cos(player_angle*Math.PI/180);
+    return {Vx:V_x,Vy:V_y};
+}
+function distance_between_two_points_square(a,b,x,y){
+    distance=(x-a)*(x-a)+(y-b)*(y-b);
+    return distance;
+}
+function judge_if_in_the_circle_of_the_player(x,y,width,height,radius,player_x,player_y,player_width,player_height){
+    if(distance_between_two_points_square(x+width/2,y+height/2,player_x+player_width/2,player_y+player_height/2)<=radius*radius){
+        return 'inside';
+    }
+    else{
+        return 'outside';
+    }
+}
+function picture_rolate(img,x,y,width,height,angle){
+    ctx.beginPath();
+    ctx.translate(x+width/2,y+height/2);
+    ctx.rotate(angle * Math.PI / 180);
+    ctx.drawImage(img,-width/2,-height/2);
+    //ctx.fillRect(0, 0, 3,3);
+    //ctx.fillStyle = 'bule';
+    //ctx.fill();
+    ctx.closePath();
+    ctx.setTransform(1, 0, 0, 1, 0, 0); 
+}
+function play_sound(sound_name){
+     var sound_object = new Audio(sound_name);
+     sound_object.play();
+} 
+class animation{
+    constructor(picture_array,interval_time,x,y,width,height){
+        this.picture_array=picture_array;
+        this.interval_time=interval_time;
+        this.x=x;
+        this.y=y;
+        this.output_picture_id=0;
+        this.animation_time=0;
+    }
+    processing(){
+        let animation_picture = document.createElement('img');
+        animation_picture.src=this.picture_array[this.output_picture_id];
+        ctx.drawImage(animation_picture, this.x+scene_move_x,this.y+scene_move_y); 
+        this.animation_time++; 
+        if(this.animation_time>this.interval_time){
+            this.animation_time=0;
+            this.output_picture_id++;
+            if(this.output_picture_id===this.picture_array.length){
+                this.output_picture_id=0;
+                 return 'over';
+            }
+            else {
+                return 'not_over';
+            }
+        }
+    }
+}
+function set_animation(){
+    for(var i=have_set_animation;i<animation_position.length;i++){
+        animation_array[i]=new animation(picture_explosion_array,4,animation_position[i].x,animation_position[i].y,1,1);
+        have_set_animation++;
+    }
+}
+function start_animation(){
+    for(var i=0;i<have_set_animation;i++){
+        if(typeof animation_array[i]!=='undefined'){
+            if(animation_array[i].processing()==='over'){
+                delete animation_position[i];
+                delete animation_array[i];
+            }
+        }
+    }
+}
+function all_animation(){
+    set_animation();
+    start_animation();
+}
+function calculate_bullet_trajectory(a,b,x,y,speed){//a,b  fire begin
+    var V_x=(x-a)*speed/Math.sqrt((a-x)*(a-x)+(b-y)*(b-y));
+    var V_y=(y-b)*speed/Math.sqrt((a-x)*(a-x)+(b-y)*(b-y));
+    var result={Vx:V_x,Vy:V_y};
+    return result;
+}
+function getRndInteger(min, max) {
+    return Math.floor(Math.random() * (max - min) ) + min;
+}
+function get_game_time_from_start(){
+    var dt=new Date();
+    var now_time=dt.getTime();
+    game_time=now_time-game_start_time;
+}
+
+function keyDownHandler(e) {
+    if(e.key == "d"||e.key == "ArrowRight") {
+        rightPressed = true;
+    }
+    else if(e.key == "a" || e.key == "ArrowLeft") {
+        leftPressed = true;
+    }
+    else if(e.key=='w'||e.key=='ArrowUp'){
+        upPressed=true;
+    }
+    else if(e.key=='s'||e.key=='ArrowDown'){
+        downPressed=true;
+    }
+     
+}
+
+
+function keyUpHandler(e) {
+    if(e.key == "d" || e.key == "ArrowRight") {
+        rightPressed = false;
+    }
+    else if(e.key == "a" || e.key == "ArrowLeft") {
+        leftPressed = false;
+    }
+    else if(e.key=='w'||e.key=='ArrowUp'){
+        upPressed=false;
+    }
+    else if(e.key=='s'||e.key=='ArrowDown'){
+        downPressed=false;
+    }
+}
+function draw_player() {
+    var plane_img=new Image();
+    plane_img.src='player.png';
+    picture_rolate(plane_img,player_x+scene_move_x,player_y+scene_move_y,player_width,player_height,player_rolate_angle);
+    //ctx.drawImage(plane_img,player_x,player_y);
+}
+function player_move(){
+   
+    if(rightPressed===true){
+        player_rolate_angle+=player_rolate_speed;
+    }
+     if(leftPressed===true){
+        player_rolate_angle-=player_rolate_speed;
+    }
+    
+    var result=calculate_player_bullet_trajectory(player_rolate_angle,player_speed);
+    player_x+=result.Vx;
+    player_y+=result.Vy;
+    /*
+     if(upPressed===true){
+        player_x+=result.Vx;
+        player_y+=result.Vy;
+        /*if(judge_if_in_the_screen(player_x,player_y,player_width,player_height)==='outside'){
+            player_x-=result.Vx;
+            player_y-=result.Vy;
+        }*/
+    //}
+    /*
+     if(downPressed===true){
+        player_x-=result.Vx;
+        player_y-=result.Vy;
+        /*
+        if(judge_if_in_the_screen(player_x,player_y,player_width,player_height)==='outside'){
+            player_x+=result.Vx;
+            player_y+=result.Vy;
+        }
+             
+         */
+   // }
+}
+function if_two_balls_collide(a_x,a_y,a_r, b_x,b_y,b_r) {
+    if((a_x-b_x)*(a_x-b_x)+(a_y-b_y)*(a_y-b_y)<=(a_r+b_r)*(a_r+b_r)){
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+function isCollision_playerBullet_and_ufo(){
+    for(var j=0;j<ufo_number;j++){
+        if(typeof ufo_array[j]!=='undefined'){
+            for(var i=bullet_out_number;i<bullet_number;i++){
+                if(typeof bullet_array[i]!=='undefined'){
+                    var result=if_two_balls_collide(bullet_array[i].x+9,bullet_array[i].y+9,9,ufo_array[j].x+40.5,ufo_array[j].y+21,21);
+                    if(result===true){
+                        //animation(picture_explosion_array,6,bullet_array[i].x,bullet_array[i].y,1,1);
+                        var animation_begin_position={x:ufo_array[j].x+40.5-24.5,y:ufo_array[j].y+21-22};
+                        if(sound_open===true){
+                            play_sound('explosion.wav');
+                        }
+                        animation_position.push(animation_begin_position);
+                        //ufo_that_be_hitted.push(j);
+                        delete ufo_array[j];
+                        delete bullet_array[i];
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+function isCollision_player_and_ufo_bullet(){
+     for(var i=0;i<ufo_bullet_array.length;i++){
+         if(typeof ufo_bullet_array[i]!=='undefined'){
+             var result=if_two_balls_collide(player_x+32,player_y+32,25,ufo_bullet_array[i].x+9.5,ufo_bullet_array[i].y+9.5,9.5);
+             if(result===true){
+                 delete ufo_bullet_array[i];
+                 player_lives-=1;
+            }
+        }
+    }
+}
+class ufo{
+    constructor(id,ufo_x,ufo_y,img,bullet_img){
+        this.ufo_img=new Image();
+        this.id=id;
+        this.x=ufo_x;
+        this.y=ufo_y;
+        this.Vx=1;
+        this.Vy=1;
+        this.a_x=0;
+        this.a_y=0;
+        this.image=img;
+        this.bullet_img=bullet_img;
+        this.ufoLastChangeDirectionTime=0;
+        this.ufoMoveTowarADeirectionTime=400;
+        this.last_fire_time=0;
+        this.fire_intervals_time=1000;
+    }
+    draw_ufo(){
+        this.ufo_img.src=this.image;
+        ctx.drawImage(this.ufo_img,this.x+scene_move_x,this.y+scene_move_y);
+    }
+    move(){
+        this.x+=this.Vx;
+        this.y+=this.Vy;
+        this.Vx+=this.a_x;
+        this.Vy+=this.a_y;
+        if(this.x<300){
+            this.a_x=getRndInteger(-20,40)*0.001;  
+            //if(this.x<100)
+        }
+        else if(this.x>canvas.width-300){
+            this.a_x=getRndInteger(-40,20)*0.001; 
+        }
+        if(this.y<0){
+            this.a_y=getRndInteger(-10,30)*0.001; 
+        }
+        if(this.y>canvas.height){
+            this.a_y=getRndInteger(-30,10)*0.001;
+        }
+        if(game_time-this.ufoLastChangeDirectionTime>this.ufoMoveTowarADeirectionTime){          
+            this.ufoMoveTowarADeirectionTime=getRndInteger(500,2000);
+            this.ufoLastChangeDirectionTime=game_time;
+            if(this.x>player_x){
+               this.a_x=getRndInteger(-10,20)*0.001;
+               this.a_y=getRndInteger(-20,20)*0.001;
+               this.image='ufoLeft.png';
+           }
+            else{
+               this.a_x=getRndInteger(-20,10)*0.001;
+               this.a_y=getRndInteger(-20,20)*0.001;
+               this.image='ufo.png';
+           }
+            //this.Vy=getRndInteger(-2,2);
+        }
+        if(this.Vx>5){
+            this.Vx=5;
+        }
+        else if(this.Vy>5)
+        {
+            this.Vy=5;
+        }
+    }
+    fire(){
+        if(judge_if_in_the_circle_of_the_player(this.x,this.y,ufo_width,ufo_height,700,player_x,player_y,player_width,player_height)==='inside'){
+            if(game_time-this.last_fire_time>this.fire_intervals_time){
+                this.fire_intervals_time=getRndInteger(100,3000);
+                this.last_fire_time=game_time;
+                var ufo_bullet={x:this.x,y:this.y,img:this.bullet_img,Vx:calculate_bullet_trajectory(this.x,this.y,player_x,player_y,ufo_bullet_speed).Vx,Vy:calculate_bullet_trajectory(this.x,this.y,player_x,player_y,ufo_bullet_speed).Vy};
+                ufo_bullet_begin_array.push(ufo_bullet);
+            }
+        }
+    }
+    out_of_screen(){
+        if(this.x+ufo_width<-300||this.x>canvas.width+300||this.y>canvas.height){
+            delete this;
+        }
+    }
+}
+function set_ufo(){
+    for(var i=0;i<ufo_number;i++){
+        ufo_array[i]=new ufo(i,600,-50*i,'ufo.png','ufo_bullet.png');
+    }
+}
+set_ufo();
+function all_ufo(){
+     for(var i=0;i<ufo_number;i++){
+        if(typeof ufo_array[i]!=='undefined'){
+            ufo_array[i].draw_ufo();
+            ufo_array[i].move();
+            ufo_array[i].fire();
+            //ufo_array[i].out_of_screen();
+        }
+    }
+}
+class ufo_bullet{
+    constructor(x,y,img,Vx,Vy){
+        this.x=x+ufo_width/2-ufo_bullet_img_width/2;
+        this.y=y+30;
+        this.Vx=Vx;
+        this.Vy=Vy;
+        this.img=img;
+    }
+    draw(){
+        var img=new Image();
+        img.src=this.img;
+        ctx.drawImage(img,this.x+scene_move_x,this.y+scene_move_y);
+    }
+    move(){
+        this.x+=this.Vx;
+        this.y+=this.Vy;
+    }
+}
+function set_ufo_bullet(){
+    for(var i=have_set_ufo_bullet_number;i<ufo_bullet_begin_array.length;i++){
+        ufo_bullet_array[i]=new ufo_bullet(ufo_bullet_begin_array[i].x,ufo_bullet_begin_array[i].y,ufo_bullet_begin_array[i].img,ufo_bullet_begin_array[i].Vx,ufo_bullet_begin_array[i].Vy);
+        delete ufo_bullet_begin_array[i];
+        have_set_ufo_bullet_number++;
+    }
+}
+function all_ufo_bullet(){
+    set_ufo_bullet();
+    for(var i=0;i<ufo_bullet_array.length;i++){
+        if(typeof  ufo_bullet_array[i]!== "undefined"){
+            ufo_bullet_array[i].draw();
+            ufo_bullet_array[i].move();
+        }
+    }
+}
+function ufo_bullet_out_of_screen(){
+    for(var i=0;i<ufo_bullet_array.length;i++){
+        if(typeof  ufo_bullet_array[i]!== "undefined"){
+            if(judge_if_in_the_circle_of_the_player(ufo_bullet_array[i].x,ufo_bullet_array[i].y,ufo_bullet_img_width,ufo_bullet_img_height,circle_r,player_x,player_y,player_width,player_height)==='outside'){
+                delete ufo_bullet_array[i];
+            }
+        }
+    }
+}
+class bullet{
+    constructor(playerX,playerY){
+        this.x=playerX+player_width/2-bullet_picture_width/2;
+        this.y=playerY;
+        this.track=calculate_player_bullet_trajectory(player_rolate_angle,bullet_speed);
+        this.rolate_angle=player_rolate_angle;
+    }
+    draw_bullet(){
+        var bullet_img=new Image();
+        bullet_img.src='bullet.png';
+        picture_rolate(bullet_img,this.x+scene_move_x,this.y+scene_move_y,bullet_picture_width,bullet_picture_height,this.rolate_angle);
+        //ctx.drawImage(bullet_img,this.x,this.y);
+    }
+    bullet_move(){
+        //var result=calculate_player_bullet_trajectory(player_rolate_angle,bullet_speed);
+        //this.y-=bullet_speed;
+        this.x+=this.track.Vx;
+        this.y+=this.track.Vy;
+    }
+} 
+function set_new_bullet(){
+    bullet_array[bullet_number]=new bullet(player_x,player_y);
+    bullet_number++;
+}
+setInterval(set_new_bullet, player_fire_intervals);
+function valid_bullet(){
+    for(var i=0;i<bullet_number;i++){
+        if(typeof bullet_array[i]!=='undefined'){
+            bullet_array[i].draw_bullet();
+            bullet_array[i].bullet_move();
+        }
+    }
+}
+function bullet_out_of_circle(){
+     for(var i=0;i<bullet_number;i++){ 
+         if(typeof bullet_array[i]!=='undefined'){
+            if(judge_if_in_the_circle_of_the_player( bullet_array[i].x, bullet_array[i].y,bullet_picture_width,bullet_picture_height,circle_r,player_x,player_y,player_width,player_height)==='outside'){
+                delete bullet_array[i];
+            }
+        }
+     }
+}
+function draw_lives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+player_lives, 8, 20);
+}
+
+function draw(){
+    //if(game_start===true){
+        get_game_time_from_start();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);  
+        draw_background('bg.png');
+        draw_bg();
+        //draw_circle();
+        //console.log(scene_move_x);
+        all_animation();
+        draw_lives();
+        valid_bullet();
+        bullet_out_of_circle();
+        isCollision_playerBullet_and_ufo();
+        isCollision_player_and_ufo_bullet();
+        all_ufo_bullet();
+        all_ufo();
+        ufo_bullet_out_of_screen();
+        player_move();
+        draw_player();
+        scene_move_by_player();
+    //animation(picture_explosion_array,6,0,0,1,1);
+    requestAnimationFrame(draw); 
+}
+draw();
+document.addEventListener("keydown", keyDownHandler, false);
+document.addEventListener("keyup", keyUpHandler, false);
+    }
+</script>
+</body>
