@@ -1,0 +1,35 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+
+
+<body>
+  <table border="1" >
+    <thead>
+      <th>Column 1</th>
+      <th>Column 2</th>
+      <th>Column 3</th>
+      <th>Column 4</th>
+      <th>
+        <button id="myBtn">Try it</button>
+      </th>
+    </thead>
+    <tbody id="tableBody">
+    </tbody>
+  </table>
+ <input type="button" onClick="addRow();" style="font-size:16px;" value="ËÑË÷" id="search_button"/> 
+<script>
+document.getElementById('myBtn').addEventListener('click', function() {
+    var row = document.getElementById('tableBody').insertRow();
+    for (var c = 0; c < 4; c += 1) {
+        row.insertCell(c).innerHTML = "cell";
+    }
+});
+$("body").on("click", "td", function(){
+   var column_num = parseInt( $(this).index() ) + 1;
+   var row_num = parseInt( $(this).parent().index() )+1;    
+   alert( "Row_num =" + row_num + "  ,  Rolumn_num ="+ column_num );   
+});
+</script> 
+</body>
+
+</html>
