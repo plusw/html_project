@@ -54,12 +54,26 @@ https://www.cnblogs.com/tobebetter-fanfan/articles/5423186.html
 		str = str.match(/"false">(\S*)<\/div/)[1];  
 		alert(str);//
 	}
-	
+	function test9(){//使用变量匹配,eval()
+		var str = '#asdf##'; 
+		//alert("hello");
+		var key="/#(\S*?)##/";
+		str = str.search(eval(key));  
+		//str = str.match(/#(\S*?)##/)[1];;
+		alert(str);//
+	}
+	function test10(){//使用变量匹配,eval()
+		var key="/#(\S*?)##/";
+		var str = '#夜明珠##小###2####'; 
+		//alert("hello");
+		str = str.match(eval("/#(\S*?)##/"))[1];;  
+		alert(str);//
+	}
 	</script>
 	<meta name='author' content='plus'>
  </head>
  <body>
-	<input type="button" onClick="test8();" style="font-size:16px;" value="测试正则表达式"/>
+	<input type="button" onClick="test11();" style="font-size:16px;" value="测试正则表达式"/>
  </body>
  <footer>
 	 <p>Plus W, Copyright &copy; 2020</p>
