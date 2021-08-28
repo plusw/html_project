@@ -99,8 +99,12 @@ function saveToLocal(){//储存当前数据到loaclStroge
 		//获取信息 #玻璃##透明###1####
 		information[serialNumber[i-1]]="";//产品信息与序号相对应
 		for(var j = 1; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
-			var str=rows[i].cells[j].innerHTML;//获取最初形式 <div ...>夜明珠<div>
-			str = str.match(/"true">(\S*)<\/div>/)[1];//正则匹配找到夜明珠
+			var str=rows[i].cells[j].innerHTML;//获取最初形式 <div ...>夜明珠<div>			
+			try{
+				str = str.match(/"true">(\S*)<\/div>/)[1];//正则匹配找到夜明珠
+			}catch(error){
+				//alert(str);
+			}
 			information[serialNumber[i-1]]=information[serialNumber[i-1]]+str;//加上
 			for(var k=0;k<1;k++){//
 				information[serialNumber[i-1]]=information[serialNumber[i-1]]+"#";//加上#,最终成   #玻璃#透明##1###  ，方便正则匹配找出信息
@@ -219,7 +223,12 @@ for(var i = 1; i<rows.length;i++){
 	for(var j = 1; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
 		var str=rows[i].cells[j].innerHTML;
 		//alert(str);
-		str = str.match(/"true">(\S*)<\/div>/)[1];
+		try{
+			str = str.match(/"true">(\S*)<\/div>/)[1];
+		}
+		catch(error){
+			console.log(str);
+		}
 		information[i]=information[i]+str;
 		information[i]=information[i]+"#";//#玻璃#透明##1###，方便正则匹配找出信息
 		
