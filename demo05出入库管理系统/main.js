@@ -1,4 +1,4 @@
-var how_many_otable_list=14;
+var how_many_otable_list=9;
 function test(){
 	//alert(copy(JSON.stringify(localStorage)));
 }
@@ -26,7 +26,7 @@ window.onload = function()//打开页面就运行这段js代码
 //封装操作localStroge方法
 //https://blog.csdn.net/bocongbo/article/details/81772157       
 //https://www.codehui.net/info/46.html   js操作localstorage
-function handleLocalStorage(method, key, value) {
+function handleLocalStorage(method, key, value){ 
 	switch (method) {
 		case 'get' : {
 		  let temp = window.localStorage.getItem(key);
@@ -53,19 +53,20 @@ function handleLocalStorage(method, key, value) {
 var num=0;
 function addRow(){
 	var row = document.getElementById('tableBody').insertRow();
-    for (var c = 0; c < 14; c += 1) {
+    for (var c = 0; c < how_many_otable_list; c += 1) {
         row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
     }
+	row.insertCell(how_many_otable_list).innerHTML = "<input type="button"  style="font-size:16px;" value="新增产品信息" id="add"/>";//最后一个表格是按钮,且不算在how_many_otable_list里
 }
 function addSearchRow(){
 	var row = document.getElementById('searchTableBody').insertRow();
-    for (var c = 0; c < 14; c += 1) {
+    for (var c = 0; c < how_many_otable_list; c += 1) {
         row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
     }
 }
 document.getElementById('add').addEventListener('click', function() {
     var row = document.getElementById('tableBody').insertRow();
-    for (var c = 0; c < 14; c += 1) {
+    for (var c = 0; c < how_many_otable_list; c += 1) {
         row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
     }
 });
@@ -172,6 +173,7 @@ function getInformationfromloacl(){
 function clearAllLocaStorage(){
 	localStorage.clear();
 }
+
 //搜索功能,默认隐藏search_result,点击搜索到显现search_result
 function search(){
 	let key=document.querySelector("#search_key");
