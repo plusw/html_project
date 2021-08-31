@@ -56,20 +56,22 @@ function addRow(){
     for (var c = 0; c < how_many_otable_list; c += 1) {
         row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
     }
-	row.insertCell(how_many_otable_list).innerHTML = "<input type="button"  style="font-size:16px;" value="新增产品信息" id="add"/>";//最后一个表格是按钮,且不算在how_many_otable_list里
-}
-function addSearchRow(){
-	var row = document.getElementById('searchTableBody').insertRow();
-    for (var c = 0; c < how_many_otable_list; c += 1) {
-        row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
-    }
+	row.insertCell(how_many_otable_list).innerHTML ='<input type="button" onClick="deleteRowStep0();" style="font-size:16px;" value="Delete" id="deleteButton"/>';//最后一个表格是按钮,且不算在how_many_otable_list里
 }
 document.getElementById('add').addEventListener('click', function() {
     var row = document.getElementById('tableBody').insertRow();
     for (var c = 0; c < how_many_otable_list; c += 1) {
         row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
     }
+	row.insertCell(how_many_otable_list).innerHTML ='<input type="button" onClick="deleteRowStep0();" style="font-size:16px;" value="Delete" id="deleteButton"/>';//最后一个表格是按钮,且不算在how_many_otable_list里
 });
+function addSearchRow(){
+	var row = document.getElementById('searchTableBody').insertRow();
+    for (var c = 0; c < how_many_otable_list; c += 1) {
+        row.insertCell(c).innerHTML = "<div contenteditable='true'></div>";
+    }
+}
+
 /*
 function addRow(){
 	//localStorage.clear();
@@ -99,7 +101,7 @@ function saveToLocal(){//储存当前数据到loaclStroge
 		serialNumber[i-1]=str0;
 		//获取信息 #玻璃##透明###1####
 		information[serialNumber[i-1]]="";//产品信息与序号相对应
-		for(var j = 1; j<rows[i].cells.length; j++ ){    // 遍历该行的 td
+		for(var j = 1; j<rows[i].cells.length-1; j++ ){    // 遍历该行的 td
 			var str=rows[i].cells[j].innerHTML;//获取最初形式 <div ...>夜明珠<div>			
 			try{
 				str = str.match(/"true">(\S*)<\/div>/)[1];//正则匹配找到夜明珠
@@ -255,24 +257,30 @@ else {
 ////x,y表示获取当前鼠标点击table中表格的位置（如果再按CTRL+V,就从当前表格处粘贴）
 var x_in_table="not_click";
 var y_in_table="not_click";
+var can_delete_row=false;
 //获取鼠标点击table中某一个表格的位置,如果再按CTRL+V,就从当前表格处粘贴
 //https://blog.csdn.net/heikerx/article/details/118895967
 $("body").on("click", "td", function(){
    x_in_table = parseInt($(this).index());
    y_in_table = parseInt($(this).parent().index())+1;     
+   if(can_delete_row==true){
+	   deleteRowStep1();
+	   can_delete_row=false;
+   }
 });
-/*
-$(document).ready(function(){
-		$("#oTable td").click(function(){
-			alert("hello");
-			var tdSeq = $(this).parent().find("td").index($(this)[0]);
-			var trSeq = $(this).parent().parent().find("tr").index($(this).parent()[0]);
-			alert("hello");
-			//alert("第"+(x_in_table+1)+"行"+"第"+(y_in_table+1)+"列");
-			
-		});
-	})
-	*/
+function deleteRowStep0(){
+	can_delete_row=true;
+}
+function deleteRowStep1(){//删除某一行信息并删除localStroge的信息
+	//删除localStroge的信息
+	str=oTable.rows[y_in_table].cells[0].innerHTML;
+    var key=str.match(/"true">(\S*)<\//)[1];
+	handleLocalStorage('remove',key);
+	//删除某一行表格信息
+	for(var i=0;i<oTable.rows[y_in_table].cells.length-1;i++){
+		oTable.rows[y_in_table].cells[i].innerHTML="";
+	}
+}
 /*	
 function doclick()   
 { 

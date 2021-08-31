@@ -51,7 +51,9 @@ fieldset{
 #add,
 #saveToLocal,
 #search_button,
-#search_save_button
+#search_save_button,
+#deleteButton,
+#config
 {
             color: white;
             border-radius: 4px;
@@ -62,6 +64,12 @@ fieldset{
 }
 #saveToLocal{
 	background: rgb(66, 184, 221);
+}
+#deleteButton{
+	background: rgb(211, 92, 200);
+}
+#config{
+	background: rgb(239, 214, 147);
 }
 header{
 	/*background:#34524a;*/
