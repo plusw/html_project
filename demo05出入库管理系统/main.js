@@ -5,6 +5,7 @@ function test(){
 function mySort(input_array){//数组排序函数，比较排序，自己写的
 	var array=input_array;
 	var biggest_index;
+	var b;
 	for ( var i=0;i<array.length;i++){
 		 biggest_index=0;
 		for (var j=0;j<array.length-i;j++){//找出最大值
@@ -12,9 +13,9 @@ function mySort(input_array){//数组排序函数，比较排序，自己写的
 				biggest_index=j;
 			}
 		}
-		a=array[array.length-i-1];
+		b=array[array.length-i-1];
 		array[array.length-i-1]=array[biggest_index];
-		array[biggest_index]=a;	
+		array[biggest_index]=b;
 	} 
 	return array;
 }
@@ -94,9 +95,11 @@ function saveToLocal(){//储存当前数据到loaclStroge
 	for(var i = 1; i<rows.length;i++){
 		//获取序号
 		var str0=rows[i].cells[0].innerHTML;
-		//alert(str0);
-		if(str0.match(/>(\S*)</)[1]!=null){
-			str0 = str0.match(/>(\S*)</)[1]; 
+		
+		if(str0!=null&&str0!=""){
+			if(str0.match(/>(\S*)</)[1]!=null){
+				str0 = str0.match(/>(\S*)</)[1]; 
+			}
 		}
 		serialNumber[i-1]=str0;
 		//获取信息 #玻璃##透明###1####
@@ -145,8 +148,10 @@ function getInformationfromloacl(){
 	for(var i=0;i<localStorage.length;i++){
 		serialNumber[i]=localStorage.key(i);
 	}
+	for(var i=0;i<serialNumber.length;i++){
+		serialNumber[i]=parseInt(serialNumber[i]);
+	}
 	serialNumber=mySort(serialNumber);
-	//alert(serialNumber);
 	//alert(serialNumber.length);
 	for(var i=0;i<serialNumber.length;i++){
 		var information=localStorage.getItem(serialNumber[i]);
